@@ -3,41 +3,36 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:usuario_teste_pratico/app/core/extension_size.dart';
 import 'package:usuario_teste_pratico/app/core/utils/auth_error_handler.dart';
 import 'package:usuario_teste_pratico/app/modules/auth/provider/login_provider.dart';
+import 'package:usuario_teste_pratico/app/modules/auth/provider/register_provider.dart';
 import 'package:usuario_teste_pratico/app/widgets/custom_button.dart';
 import 'package:usuario_teste_pratico/app/widgets/custom_text_field.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-
+class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final loginProvider = Modular.get<LoginProvider>(); 
+  final _firstNameController = TextEditingController();
+  final _lastNameController = TextEditingController();
+
+  final registerProvider = Modular.get<RegisterProvider>();
   final _formKey = GlobalKey<FormState>();
 
-  
-  /// Função responsável por realizar o login do usuário.
-  ///
-  /// Caso o login seja bem-sucedido, redireciona para a página principal (`/users`).
-  /// Em caso de erro, exibe uma mensagem apropriada.
-  void _login(BuildContext context) async {
+  void _register(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       try {
-        await loginProvider.login(_emailController.text, _passwordController.text);
-        if (!context.mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("login sucesso")),
-        );
+        await registerProvider.register(_firstNameController.text,
+            _lastNameController.text, _emailController.text, _passwordController.text);
         Modular.to.navigate('/users');
       } catch (e) {
         if (!context.mounted) return;
 
-        final errorMessage = getAuthErrorMessage(e);
+        final errorMessage = getRegisterErrorMessage(e);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(errorMessage)),
@@ -65,8 +60,29 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomTextField(
+                controller: _firstNameController,
+                label: "Primeiro nome",
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira um email';
+                  }
+                  return null;
+                },
+              ),
+              CustomTextField(
+                controller: _lastNameController,
+                label: "Sobrenome",
+                obscureText: true,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, insira uma senha';
+                  }
+                  return null;
+                },
+              ),
+              CustomTextField(
                 controller: _emailController,
-                label: "E-mail",
+                label: "E-email",
                 icon: Icons.email_outlined,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
@@ -87,12 +103,11 @@ class _LoginPageState extends State<LoginPage> {
                   return null;
                 },
               ),
-              CustomButton(text: "Entrar", onPressed: () async {
-                _login(context);
-              }),
-              TextButton(onPressed: (){
-                Modular.to.navigate('/register');
-              }, child: Text("Cria conta", style: TextStyle(color: Color(0xFF52B2AD)),))
+              CustomButton(
+                  text: "Registrar",
+                  onPressed: () async {
+                    _register(context);
+                  })
             ],
           ),
         ),
