@@ -19,8 +19,8 @@ class AuthModule extends Module {
     /// de sessão.
     i.addSingleton(() => LoginStore());
     i.addSingleton(() => RegisterStore());
-    i.addSingleton(() => LoginProvider(loginStore: LoginStore()));
-    i.addSingleton(() => RegisterProvider(registerStore: RegisterStore()));
+    i.addSingleton(() => LoginProvider(loginStore: i.get<LoginStore>()));
+    i.addSingleton(() => RegisterProvider(registerStore: i.get<RegisterStore>()));
   }
 
   @override
