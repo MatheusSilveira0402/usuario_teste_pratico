@@ -27,7 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
       try {
         await registerProvider.register(_firstNameController.text,
             _lastNameController.text, _emailController.text, _passwordController.text);
-        Modular.to.pushNamed('/users');
+        Modular.to.navigate('/users');
       } catch (e) {
         if (!context.mounted) return;
 

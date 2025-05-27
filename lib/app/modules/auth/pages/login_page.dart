@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("login sucesso")),
         );
-        Modular.to.pushNamed('/users');
+        Modular.to.navigate('/users');
       } catch (e) {
         if (!context.mounted) return;
 

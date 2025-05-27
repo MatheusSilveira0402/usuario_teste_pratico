@@ -8,9 +8,10 @@ class UsersProvider extends ChangeNotifier {
   UsersProvider({required this.usersStore});
 
   List<UserModel> _users = [];
+  List<UserModel> _filteredUsers = [];
   bool _isLoading = false;
 
-  List<UserModel> get users => _users;
+  List<UserModel> get users => _filteredUsers.isEmpty ? _users : _filteredUsers;
   bool get isLoading => _isLoading;
 
   Future<void> getUsers() async {
@@ -18,7 +19,7 @@ class UsersProvider extends ChangeNotifier {
     notifyListeners();
 
     _users = await usersStore.getListUser();
-
+    _filteredUsers.clear(); 
     _isLoading = false;
     notifyListeners();
   }
@@ -30,12 +31,13 @@ class UsersProvider extends ChangeNotifier {
     String password,
   ) async {
     await usersStore.createUser(UserModel(
-        id: Uuid().v4(),
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        password: password));
-    getUsers();
+      id: Uuid().v4(),
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      password: password,
+    ));
+    await getUsers();
   }
 
   Future<void> updateUser(
@@ -46,22 +48,37 @@ class UsersProvider extends ChangeNotifier {
     String password,
   ) async {
     await usersStore.updateUser(UserModel(
-        id: id,
-        email: email,
-        firstName: firstName,
-        lastName: lastName,
-        password: password));
-    getUsers();
+      id: id,
+      email: email,
+      firstName: firstName,
+      lastName: lastName,
+      password: password,
+    ));
+    await getUsers();
   }
 
-  Future<void> delteUser(
-    String id,
-  ) async {
+  Future<void> delteUser(String id) async {
+    _users.removeWhere((element) => element.id == id);
+    _filteredUsers.removeWhere((element) => element.id == id);
+    notifyListeners();
     await usersStore.deleteUser(id);
-    getUsers();
   }
 
   bool checkEmail(String email) {
-    return users.any((user) => user.email == email);
+    return _users.any((user) => user.email == email);
+  }
+
+  /// Filtra a lista de usuários pelo e-mail (mínimo de 4 caracteres)
+  void filterUsersByEmail(String query) {
+    if (query.length > 1) {
+      final lowerQuery = query.toLowerCase();
+      _filteredUsers = _users
+          .where((user) => user.email.toLowerCase().contains(lowerQuery))
+          .toList();
+    } else {
+      _filteredUsers.clear();
+    }
+    notifyListeners();
   }
 }
+

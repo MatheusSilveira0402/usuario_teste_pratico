@@ -24,6 +24,9 @@ class CustomTextField extends StatelessWidget {
   /// Função de validação que retorna uma mensagem de erro ou null.
   final FormFieldValidator<String>? validator;
 
+  /// Função de quando mudar de stato faça algo
+  final Future<void> Function(String)? onChanged;
+
   /// Construtor do campo de texto customizado.
   const CustomTextField({
     super.key,
@@ -33,6 +36,7 @@ class CustomTextField extends StatelessWidget {
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
     this.validator,
+    this.onChanged
   });
 
   @override
@@ -42,6 +46,7 @@ class CustomTextField extends StatelessWidget {
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: validator,
+      onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: icon != null ? Icon(icon) : null,
