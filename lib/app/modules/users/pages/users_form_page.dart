@@ -2,32 +2,60 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:usuario_teste_pratico/app/core/extension_size.dart';
 import 'package:usuario_teste_pratico/app/core/utils/auth_error_handler.dart';
-import 'package:usuario_teste_pratico/app/modules/auth/provider/register_provider.dart';
+import 'package:usuario_teste_pratico/app/models/user_model.dart';
+import 'package:usuario_teste_pratico/app/modules/users/provider/users_provider.dart';
 import 'package:usuario_teste_pratico/app/widgets/custom_button.dart';
 import 'package:usuario_teste_pratico/app/widgets/custom_text_field.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class UsersFormPage extends StatefulWidget {
+  const UsersFormPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<UsersFormPage> createState() => _UsersFormPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _UsersFormPageState extends State<UsersFormPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
 
-  final registerProvider = Modular.get<RegisterProvider>();
+  final userProvider = Modular.get<UsersProvider>();
   final _formKey = GlobalKey<FormState>();
+  late UserModel? userModel;
+  bool isEditing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    userModel = Modular.args.data;
+    isEditing = userModel != null && userModel!.id.isNotEmpty;
+    if (isEditing) {
+      _firstNameController.text = userModel!.firstName.toString();
+      _lastNameController.text = userModel!.lastName.toString();
+      _emailController.text = userModel!.email.toString();
+      _passwordController.text = userModel!.password.toString();
+    }
+  }
 
   void _register(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       try {
-        await registerProvider.register(_firstNameController.text,
-            _lastNameController.text, _emailController.text, _passwordController.text);
-        Modular.to.pushNamed('/users');
+        if (userProvider.checkEmail(_emailController.text)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('E-mail já cadastrado')),
+          );
+          return;
+        }
+        if (isEditing) {
+          await userProvider.updateUser(userModel!.id, _firstNameController.text,
+              _lastNameController.text, _emailController.text, _passwordController.text);
+        } else {
+          await userProvider.createUser(_firstNameController.text,
+              _lastNameController.text, _emailController.text, _passwordController.text);
+        }
+        if (!context.mounted) return;
+        Modular.to.pop();
       } catch (e) {
         if (!context.mounted) return;
 
@@ -38,11 +66,6 @@ class _RegisterPageState extends State<RegisterPage> {
         );
       }
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override

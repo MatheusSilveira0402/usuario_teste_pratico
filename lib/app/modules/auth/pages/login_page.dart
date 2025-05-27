@@ -33,7 +33,7 @@ class _LoginPageState extends State<LoginPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("login sucesso")),
         );
-        Modular.to.navigate('/users');
+        Modular.to.pushNamed('/users');
       } catch (e) {
         if (!context.mounted) return;
 
@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
                 _login(context);
               }),
               TextButton(onPressed: (){
-                Modular.to.navigate('/register');
+                Modular.to.pushNamed('/register');
               }, child: Text("Cria conta", style: TextStyle(color: Color(0xFF52B2AD)),))
             ],
           ),

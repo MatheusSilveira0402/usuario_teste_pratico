@@ -1,5 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:usuario_teste_pratico/app/modules/auth/auth_module.dart';
+import 'package:usuario_teste_pratico/app/modules/users/users_module.dart';
 
 /// Define os módulos principais da aplicação e suas rotas.
 ///
@@ -21,5 +22,6 @@ class AppModule extends Module {
   @override
   void routes(RouteManager r) {
     r.module('/', module: AuthModule());
+    r.module('/users', module: UsersModule());
   }
 }
