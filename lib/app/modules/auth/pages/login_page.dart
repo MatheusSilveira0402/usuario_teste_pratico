@@ -14,13 +14,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final loginProvider = Modular.get<LoginProvider>(); 
+  final loginProvider = Modular.get<LoginProvider>();
   final _formKey = GlobalKey<FormState>();
 
-  
   /// Função responsável por realizar o login do usuário.
   ///
   /// Caso o login seja bem-sucedido, redireciona para a página principal (`/users`).
@@ -54,47 +52,73 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      backgroundColor: Colors.grey[500],
+      body: SizedBox(
         width: context.screenWidth,
         height: context.screenHeight,
-        padding: EdgeInsets.all(10),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            spacing: 10.0,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CustomTextField(
-                controller: _emailController,
-                label: "E-mail",
-                icon: Icons.email_outlined,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira um email';
-                  }
-                  return null;
-                },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Card(
+              elevation: 4,
+              margin: EdgeInsets.zero,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
               ),
-              CustomTextField(
-                controller: _passwordController,
-                label: "Senha",
-                icon: Icons.lock_outline,
-                obscureText: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Por favor, insira uma senha';
-                  }
-                  return null;
-                },
+              child: Container(
+                margin: EdgeInsets.only(top: 10),
+                padding: EdgeInsets.all(10),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 10,
+                    children: [
+                      CustomTextField(
+                        controller: _emailController,
+                        label: "E-mail",
+                        icon: Icons.email_outlined,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira um email';
+                          }
+                          return null;
+                        },
+                      ),
+                      CustomTextField(
+                        controller: _passwordController,
+                        label: "Senha",
+                        icon: Icons.lock_outline,
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Por favor, insira uma senha';
+                          }
+                          return null;
+                        },
+                      ),
+                      CustomButton(
+                          text: "Entrar",
+                          onPressed: () async {
+                            _login(context);
+                          }),
+                      TextButton(
+                          onPressed: () {
+                            Modular.to.pushNamed('/register');
+                          },
+                          child: Text(
+                            "Cria conta",
+                            style: TextStyle(color: Color(0xFF52B2AD)),
+                          ))
+                    ],
+                  ),
+                ),
               ),
-              CustomButton(text: "Entrar", onPressed: () async {
-                _login(context);
-              }),
-              TextButton(onPressed: (){
-                Modular.to.pushNamed('/register');
-              }, child: Text("Cria conta", style: TextStyle(color: Color(0xFF52B2AD)),))
-            ],
-          ),
+            )
+          ],
         ),
       ),
     );

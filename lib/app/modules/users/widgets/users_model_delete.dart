@@ -3,7 +3,6 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:usuario_teste_pratico/app/core/extension_size.dart';
 import 'package:usuario_teste_pratico/app/models/user_model.dart';
 import 'package:usuario_teste_pratico/app/modules/users/provider/users_provider.dart';
-import 'package:usuario_teste_pratico/app/widgets/custom_button.dart';
 
 class UsersModelDelete extends StatelessWidget {
   final UserModel user;

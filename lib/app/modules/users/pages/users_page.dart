@@ -67,7 +67,7 @@ class _UsersPageState extends State<UsersPage> {
             children: [
               CustomTextField(
                 controller: _emailController,
-                label: "E-email",
+                label: "E-mail",
                 icon: Icons.email_outlined,
                 onChanged: (text) async {
                   providerUser.filterUsersByEmail(text);
