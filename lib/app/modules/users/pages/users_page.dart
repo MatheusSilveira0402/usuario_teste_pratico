@@ -29,17 +29,7 @@ class _UsersPageState extends State<UsersPage> {
   @override
   Widget build(BuildContext context) {
     final providerUser = context.watch<UsersProvider>();
-    if (providerUser.isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
     final users = providerUser.users;
-    if (users.isEmpty) {
-      return const Scaffold(
-        body: Center(child: Text('Nenhum usuário encontrado')),
-      );
-    }
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: context.heightPct(0.15),
@@ -80,6 +70,17 @@ class _UsersPageState extends State<UsersPage> {
                   itemCount: users.length,
                   itemBuilder: (context, index) {
                     final user = users[index];
+                    if (providerUser.isLoading) {
+                      return const Scaffold(
+                        body: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+
+                    if (users.isEmpty) {
+                      return const Scaffold(
+                        body: Center(child: Text('Nenhum usuário encontrado')),
+                      );
+                    }
                     return UserCard(user: user);
                   },
                 ),

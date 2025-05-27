@@ -25,6 +25,12 @@ class _RegisterPageState extends State<RegisterPage> {
   void _register(BuildContext context) async {
     if (_formKey.currentState!.validate()) {
       try {
+        if (await registerProvider.checkEmail(_emailController.text)) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('E-mail já cadastrado')),
+          );
+          return;
+        }
         await registerProvider.register(_firstNameController.text,
             _lastNameController.text, _emailController.text, _passwordController.text);
         Modular.to.navigate('/users');
@@ -60,7 +66,7 @@ class _RegisterPageState extends State<RegisterPage> {
         height: context.screenHeight,
         padding: EdgeInsets.all(5),
         child: SingleChildScrollView(
-          padding:EdgeInsets.all(5),
+          padding: EdgeInsets.all(5),
           child: Form(
             key: _formKey,
             child: Column(
